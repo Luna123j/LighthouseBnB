@@ -26,7 +26,7 @@ const getUserWithEmail = function(email) {
     WHERE email = $1;
     `, [email])
     .then((res) => {
-      console.log(res.rows[0]);
+      // console.log(res.rows[0]);
       const user = res.rows[0];
       return Promise.resolve(user);
     })
@@ -48,7 +48,7 @@ const getUserWithId = function(id) {
       WHERE id = $1;
       `, [id])
     .then((res) => {
-      console.log(res.rows[0]);
+      // console.log(res.rows[0]);
       return Promise.resolve(res.rows[0]);
     })
     .catch((err) => {
@@ -69,9 +69,9 @@ const addUser = function(user) {
       `INSERT INTO users (name,email,password) 
       VALUES ($1,$2,$3)
       RETURNING *;
-      `, [user.name,user.email,user.password])
+      `, [user.name, user.email, user.password])
     .then((res) => {
-      console.log(res.rows);
+      // console.log(res.rows);
       return Promise.resolve(res.rows);
     })
     .catch((err) => {
@@ -88,7 +88,33 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  return getAllProperties(null, 2);
+  return client
+    .query(
+      `SELECT
+      reservations.*,
+      properties.*,
+      reservations.*
+    FROM
+      reservations
+      JOIN properties ON properties.id = property_id
+      JOIN property_reviews ON reservations.id = reservation_id
+    WHERE
+      reservations.guest_id = $1
+    GROUP BY
+      reservations.id,
+      properties.id
+    ORDER BY
+      start_date
+    LIMIT
+      $2
+      `, [guest_id,limit])
+    .then((res) => {
+      // console.log(res.rows);
+      return Promise.resolve(res.rows);
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
 };
 exports.getAllReservations = getAllReservations;
 
