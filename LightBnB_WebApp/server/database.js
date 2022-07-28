@@ -191,7 +191,7 @@ const getAllProperties = function(options, limit = 10) {
  `;
 
   // 5
-  console.log(queryString, queryParams);
+  // console.log(queryString, queryParams);
 
   // 6
   return client.query(queryString, queryParams).then((res) => res.rows);
@@ -205,7 +205,7 @@ exports.getAllProperties = getAllProperties;
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function(property) {
-  console.log(property);
+  // console.log(property);
   let valueStr = "";
   const queryParams = [];
 
@@ -218,7 +218,7 @@ const addProperty = function(property) {
   }
   let queryStr = `INSERT INTO properties (${Object.keys(property).toString()}) VALUES (${valueStr});`;
 
-  console.log(queryStr);
+  // console.log(queryStr);
   return client
     .query(
       queryStr, queryParams)
@@ -230,3 +230,31 @@ const addProperty = function(property) {
     });
 };
 exports.addProperty = addProperty;
+
+const addReservation = function(reservation) {
+  // console.log(reservation);
+  let valueStr = "";
+  const queryParams = [];
+
+  for (let key in reservation) {
+    if (queryParams.length > 0) {
+      valueStr += " , ";
+    }
+    queryParams.push(reservation[key]);
+    valueStr += `$${queryParams.length}`;
+  }
+  let queryStr = `INSERT INTO reservations (${Object.keys(reservation).toString()}) VALUES (${valueStr});`;
+
+  // console.log(queryStr);
+  return client
+    .query(
+      queryStr, queryParams)
+    .then((res) => {
+      res.rows;
+    })
+    .catch((err) => {
+      console.log(err.message);
+    });
+  
+};
+exports.addReservation = addReservation;

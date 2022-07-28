@@ -10,6 +10,7 @@ $(() => {
     $searchPropertyForm.detach();
     $logInForm.detach();
     $signUpForm.detach();
+    $newReservationForm.detach();
 
     switch (item) {
       case 'listings':
@@ -27,6 +28,9 @@ $(() => {
       case 'signUp':
         $signUpForm.appendTo($main);
         break;
+      case 'newReservation':
+        $newReservationForm.appendTo($main);
+        break;
       case 'error': {
         const $error = $(`<p>${arguments[1]}</p>`);
         $error.appendTo('body');
@@ -34,10 +38,10 @@ $(() => {
           $error.remove();
           views_manager.show('listings');
         }, 2000);
-        
+
         break;
       }
     }
   }
-  
+
 });
